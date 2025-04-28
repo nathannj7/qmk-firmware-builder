@@ -1,11 +1,17 @@
+# Enable VIAL support
 VIA_ENABLE = yes
 VIAL_ENABLE = yes
 
+# Compile with LTO to reduce size
 LTO_ENABLE = yes
 
-VIAL_ENCODERS_ENABLE = yes
-MOUSEKEY_ENABLE = yes
-QMK_SETTINGS = no
+# Disable the following features
+CONSOLE_ENABLE = no
+UNICODE_ENABLE = no
+MOUSEKEY_ENABLE = no
 KEY_OVERRIDE_ENABLE = no
 MAGIC_ENABLE = no
-UNICODE_ENABLE = yes
+
+# Enable the following features
+VIAL_ENCODERS_ENABLE = yes
+QMK_SETTINGS = no

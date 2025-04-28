@@ -9,3 +9,6 @@
 /* Add timeout for RGB lights */
 #define RGBLIGHT_SLEEP 
 #define RGBLIGHT_TIMEOUT 60000
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 2
+

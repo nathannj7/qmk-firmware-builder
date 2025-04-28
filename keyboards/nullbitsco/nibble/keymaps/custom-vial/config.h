@@ -9,3 +9,12 @@
 /* Add timeout for RGB lights */
 #define RGBLIGHT_SLEEP 
 #define RGBLIGHT_TIMEOUT 60000
+
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
+#define NO_ACTION_ONESHOT
+#define NO_ACTION_TAPPING
+
+/* Reduce number of layers */
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 2

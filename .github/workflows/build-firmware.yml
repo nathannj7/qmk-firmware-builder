@@ -29,7 +29,7 @@ jobs:
       run: |
         git config core.sparsecheckout true
         printf '/*\n!/keyboards\n' > .git/info/sparse-checkout
-        for kb in $(find ../keyboards -depth -type d |  awk '$0 !~ /keymaps/' | awk -F / 'NF>=p; {p=NF}' |sed 's/..//'); do echo "$kb/*\n" >> .git/info/sparse-checkout; done;
+        for kb in $(find ../keyboards -depth -type d |  awk '$0 !~ /keymaps/' | awk -F / 'NF>=p; {p=NF}' |sed 's/..//'); do echo "$kb/*" >> .git/info/sparse-checkout; done;
         git checkout $QMK_BRANCH --
 
     - name: Set Up QMK
