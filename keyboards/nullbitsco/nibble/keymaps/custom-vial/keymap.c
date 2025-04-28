@@ -101,3 +101,13 @@ void post_encoder_update_user(uint8_t index, bool clockwise) {
   refresh_rgb();
   #endif
 }
+
+void matrix_init_user(void) {
+  // Initialize remote keyboard, if connected (see readme)
+  matrix_init_remote_kb();
+}
+
+void matrix_scan_user(void) {
+  // Scan and parse keystrokes from remote keyboard, if connected (see readme)
+  matrix_scan_remote_kb();
+}
