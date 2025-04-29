@@ -10,5 +10,11 @@
 #define RGBLIGHT_SLEEP 
 #define RGBLIGHT_TIMEOUT 60000
 
+/* Bin out some stuff to make it fit in ROM */
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
+#define NO_ACTION_ONESHOT
+#define NO_ACTION_TAPPING
+
 #define DYNAMIC_KEYMAP_LAYER_COUNT 2
 

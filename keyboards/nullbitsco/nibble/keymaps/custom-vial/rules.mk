@@ -14,7 +14,7 @@ COMMAND_ENABLE = no
 
 # Enable the following features
 QMK_SETTINGS = yes
-ENCODER_MAP_ENABLE = yes
+# ENCODER_MAP_ENABLE = yes
 VIAL_ENCODERS_ENABLE = yes # No idea  if this is needed
 UNICODE_ENABLE = yes
 AVR_USE_MINIMAL_PRINTF = yes
