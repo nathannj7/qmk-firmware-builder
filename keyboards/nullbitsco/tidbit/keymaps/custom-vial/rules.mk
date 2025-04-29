@@ -7,13 +7,13 @@ LTO_ENABLE = yes
 
 # Disable the following features
 CONSOLE_ENABLE = no
-MOUSEKEY_ENABLE = no
+MOUSEKEY_ENABLE = yes
 KEY_OVERRIDE_ENABLE = no
 MAGIC_ENABLE = no
 COMMAND_ENABLE = no
 
 # Enable the following features
-QMK_SETTINGS = yes
+QMK_SETTINGS = no
 ENCODER_MAP_ENABLE = yes
 # VIAL_ENCODERS_ENABLE = yes # No idea  if this is needed
 # UNICODE_ENABLE = yes
