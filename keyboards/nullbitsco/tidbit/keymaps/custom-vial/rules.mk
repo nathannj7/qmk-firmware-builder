@@ -7,11 +7,14 @@ LTO_ENABLE = yes
 
 # Disable the following features
 CONSOLE_ENABLE = no
-UNICODE_ENABLE = no
 MOUSEKEY_ENABLE = no
 KEY_OVERRIDE_ENABLE = no
 MAGIC_ENABLE = no
+COMMAND_ENABLE = no
 
 # Enable the following features
-VIAL_ENCODERS_ENABLE = yes
-QMK_SETTINGS = no
+QMK_SETTINGS = yes
+ENCODER_MAP_ENABLE = yes
+VIAL_ENCODERS_ENABLE = yes # No idea  if this is needed
+UNICODE_ENABLE = yes
+AVR_USE_MINIMAL_PRINTF = yes
