@@ -1,0 +1,11 @@
+{
+    "keyboard_name": "Ellipsis Split V2",
+    "manufacturer": "Cameron Sun",
+    "url": "csun.io",
+    "maintainer": "Cameron Sun",
+    "usb": {
+        "vid": "0xFEED",
+        "pid": "0xE116",
+        "device_version": "1.0.0"
+    }
+}
