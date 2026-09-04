@@ -1,0 +1,7 @@
+Notes for cameron:
+
+Use QMK msys to flash
+qmk flash -kb ellipsis_split -km default -bl avrdude-split-left
+qmk flash -kb ellipsis_split -km default -bl avrdude-split-right
+
+Place button on reset pads temporarily to reset
