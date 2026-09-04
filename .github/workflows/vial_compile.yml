@@ -10,29 +10,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install QMK Dependencies
+      - name: Fetch, Patch, and Compile Clean Vial Source
         run: |
-          python -m pip install --upgrade pip
-          pip install qmk milc argcomplete dotty-dict
-
-      - name: Fetch and Compile Clean Vial Source
-        run: |
-          # Guarantee complete isolation
+          # 1. Guarantee complete isolation
           rm -rf vial-qmk github.com
           
-          # Force clean clone of valid remote target
+          # 2. Clean clone the official Vial repository
           git clone --depth=1 --recursive https://github.com vial-qmk
           
-          # Construct layout mapping space
+          # 3. FIX PYTHON 3.14 BUG: Replace the broken ast.Num with Python 3.14 compatible ast.Constant
+          sed -i 's/isinstance(node, ast.Num):/isinstance(node, (ast.Num, ast.Constant)):/g' vial-qmk/lib/python/qmk/math.py
+          sed -i 's/return node.n/return getattr(node, "n", getattr(node, "value", None))/g' vial-qmk/lib/python/qmk/math.py
+          
+          # 4. Construct layout mapping space
           mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
           cp -r keyboards/handwired/ellipsis_split_v2/* vial-qmk/keyboards/handwired/ellipsis_split_v2/
           
-          # Move into target directory and fire compiler
+          # 5. Move into target directory and fire compiler
           cd vial-qmk
           make handwired/ellipsis_split_v2:vial
           
