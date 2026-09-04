@@ -1,65 +1,51 @@
-name: Build Custom Firmaware
+name: Build Custom Vial Firmware
 
 on:
-  push:
   workflow_dispatch:
-
-env:
-  QMK_REPO: vial-kb/vial-qmk
-  QMK_BRANCH: vial
+  push:
+    branches: [ "main", "master" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: qmkfm/qmk_cli
-
+    runs-on: ubuntu-22.04  # Reverted to highly stable Ubuntu base
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Checkout custom keymaps
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Clone QMK fork
-      run: | 
-        git clone --no-checkout https://github.com/$QMK_REPO.git --depth 1 --branch $QMK_BRANCH ./qmk_firmware
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # Force-locks Python to ensure ast.Num is fully supported
 
-    - name: Determine & Checkout relevant keyboards
-      working-directory: ./qmk_firmware
-      run: |
-        git config core.sparsecheckout true
-        printf '/*\n!/keyboards\n' > .git/info/sparse-checkout
-        for kb in $(find ../keyboards -depth -type d |  awk '$0 !~ /keymaps/' | awk -F / 'NF>=p; {p=NF}' |sed 's/..//'); do echo "$kb/*" >> .git/info/sparse-checkout; done;
-        printf '!/keyboards/**/keymaps\n' >> .git/info/sparse-checkout
-        git checkout $QMK_BRANCH --
+      - name: Install QMK Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install qmk milc argcomplete dotty-dict
 
-    - name: Set Up QMK
-      working-directory: ./qmk_firmware
-      run: |
-        qmk setup -y
+      - name: Cache QMK
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.build_cache
+            vial-qmk
+          key: ${{ runner.os }}-qmk-${{ hashFiles('**/rules.mk') }}
 
-    - name: Copy keymap
-      run: |
-        mkdir -p qmk_firmware/keyboards/
-        cp -rup ./keyboards/* ./qmk_firmware/keyboards/
-        
-    - name: Compile Custom Firmware
-      working-directory: ./qmk_firmware
-      run: |
-        make all
-
-    - name: Upload compiled firmware (build artifact)
-      uses: actions/upload-artifact@v4
-      with:
-        name: Firmware Files
-        path: |
-          ./qmk_firmware/*.hex
-          ./qmk_firmware/*.bin
-
-    - name: Upload compiled firmware (tagged release)
-      uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: |
-          ./qmk_firmware/*.hex
-          ./qmk_firmware/*.bin
+      - name: Setup Environment and Compile
+        run: |
+          if [ ! -d "vial-qmk" ]; then
+            git clone --depth=1 --recursive https://github.com
+          fi
+          # Clear old targets and copy your custom setup over
+          rm -rf vial-qmk/keyboards/handwired/ellipsis_split_v2
+          mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
+          cp -r keyboards/handwired/ellipsis_split_v2/* vial-qmk/keyboards/handwired/ellipsis_split_v2/
+          
+          cd vial-qmk
+          # Safe fallback to standard compilation call
+          make handwired/ellipsis_split_v2:vial
+          
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: ellipsis-vial-firmware
+          path: vial-qmk/*.hex
