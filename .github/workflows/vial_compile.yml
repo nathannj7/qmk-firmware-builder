@@ -10,23 +10,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Fetch, Patch, and Compile Clean Vial Source
+      - name: Install AVR Compiler Toolchain
         run: |
-          # 1. Guarantee complete isolation
+          sudo apt-get update
+          sudo apt-get install -y gcc-avr avr-libc make git
+
+      - name: Fetch and Compile Clean Vial Source
+        run: |
+          # 1. Clear out any old traces
           rm -rf vial-qmk github.com qmk_firmware
           
           # 2. Clean clone the official Vial repository
           git clone --depth=1 --recursive https://github.com vial-qmk
           
-          # 3. GLOBAL FIX PYTHON 3.14 BUG: Locate every single math.py file in the repository and fix ast.Num
-          find . -name "math.py" -exec sed -i 's/isinstance(node, ast.Num):/isinstance(node, (ast.Num, ast.Constant)):/g' {} +
-          find . -name "math.py" -exec sed -i 's/return node.n/return getattr(node, "n", getattr(node, "value", None))/g' {} +
-          
-          # 4. Construct layout mapping space
+          # 3. Construct layout mapping space
           mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
           cp -r keyboards/handwired/ellipsis_split_v2/* vial-qmk/keyboards/handwired/ellipsis_split_v2/
           
-          # 5. Move into target directory and fire compiler
+          # 4. Compile directly using the C-Toolchain (Bypassing Python entirely)
           cd vial-qmk
           make handwired/ellipsis_split_v2:vial
           
