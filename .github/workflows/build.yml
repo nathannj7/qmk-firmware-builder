@@ -32,12 +32,13 @@ jobs:
 
       - name: Setup Environment and Compile
         run: |
-          if [ ! -d "vial-qmk" ]; then
-            # FIX: Restored the complete official Vial QMK repository URL
-            git clone --depth=1 --recursive https://github.com
-          fi
-          # Clear old targets and copy your custom setup over
-          rm -rf vial-qmk/keyboards/handwired/ellipsis_split_v2
+          # Force delete any broken folders left behind by the cache
+          rm -rf vial-qmk
+          
+          # Clean clone the absolute correct repository
+          git clone --depth=1 --recursive https://github.com
+          
+          # Copy your custom keyboard directory over
           mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
           cp -r keyboards/handwired/ellipsis_split_v2/* vial-qmk/keyboards/handwired/ellipsis_split_v2/
           
