@@ -13,14 +13,14 @@ jobs:
       - name: Fetch, Patch, and Compile Clean Vial Source
         run: |
           # 1. Guarantee complete isolation
-          rm -rf vial-qmk github.com
+          rm -rf vial-qmk github.com qmk_firmware
           
           # 2. Clean clone the official Vial repository
           git clone --depth=1 --recursive https://github.com vial-qmk
           
-          # 3. FIX PYTHON 3.14 BUG: Replace the broken ast.Num with Python 3.14 compatible ast.Constant
-          sed -i 's/isinstance(node, ast.Num):/isinstance(node, (ast.Num, ast.Constant)):/g' vial-qmk/lib/python/qmk/math.py
-          sed -i 's/return node.n/return getattr(node, "n", getattr(node, "value", None))/g' vial-qmk/lib/python/qmk/math.py
+          # 3. GLOBAL FIX PYTHON 3.14 BUG: Locate every single math.py file in the repository and fix ast.Num
+          find . -name "math.py" -exec sed -i 's/isinstance(node, ast.Num):/isinstance(node, (ast.Num, ast.Constant)):/g' {} +
+          find . -name "math.py" -exec sed -i 's/return node.n/return getattr(node, "n", getattr(node, "value", None))/g' {} +
           
           # 4. Construct layout mapping space
           mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
