@@ -1,0 +1,43 @@
+name: Compile Ellipsis Split V2 Firmware
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean-build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install QMK Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install qmk milc argcomplete dotty-dict
+
+      - name: Fetch and Compile Clean Vial Source
+        run: |
+          # Guarantee complete isolation
+          rm -rf vial-qmk github.com
+          
+          # Force clean clone of valid remote target
+          git clone --depth=1 --recursive https://github.com vial-qmk
+          
+          # Construct layout mapping space
+          mkdir -p vial-qmk/keyboards/handwired/ellipsis_split_v2
+          cp -r keyboards/handwired/ellipsis_split_v2/* vial-qmk/keyboards/handwired/ellipsis_split_v2/
+          
+          # Move into target directory and fire compiler
+          cd vial-qmk
+          make handwired/ellipsis_split_v2:vial
+          
+      - name: Export Completed Hex Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ellipsis-vial-firmware
+          path: vial-qmk/*.hex
